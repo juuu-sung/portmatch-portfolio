@@ -1,0 +1,3 @@
+# Keep source bytes stable: cached datasets and models hash Python source files.
+* text=auto eol=lf
+*.py -text diff=python

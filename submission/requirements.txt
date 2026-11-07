@@ -1,0 +1,11 @@
+# All runtime dependencies are preinstalled in the official evaluation image.
+# Per the organizer's recommendation, do not reinstall these packages:
+# numpy==1.26.4
+# pandas==2.0.3
+# scipy==1.15.3
+# scikit-learn==1.5.2
+# rapidfuzz==3.14.3
+# Unidecode==1.4.0
+# joblib==1.5.2
+# lightgbm==4.6.0
+# https://dacon.io/competitions/official/236771/overview/evaluation

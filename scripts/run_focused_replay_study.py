@@ -1,0 +1,103 @@
+"""Run the protected name/moderate-GT replay comparison from a VS Code terminal."""
+from __future__ import annotations
+
+import argparse
+from concurrent.futures import ThreadPoolExecutor, as_completed
+import json
+import os
+from pathlib import Path
+import subprocess
+import sys
+import threading
+
+WORKSPACE=Path(__file__).resolve().parents[1]
+sys.path.insert(0,str(WORKSPACE))
+from scripts.run_compound_study import archive_interrupted, runner_lock, complete
+from portmatch.compound_experiment import read_json, write_json
+from portmatch.focused_replay_experiment import check, freeze, verify_fold_assets
+from scripts.verify_submission import ProcessMemoryMonitor, terminate_owned_process_tree
+
+
+def stop_child(child, monitor):
+    """Stop this fold's owned launcher and interpreter, including Windows venv children."""
+    if child.poll() is None:
+        terminate_owned_process_tree(child, monitor)
+
+
+def status(root):
+    root=Path(root).resolve()
+    if not (root/'protocol.json').exists():return {'initialized':False}
+    frozen=check(root)
+    return {'initialized':True,'folds':{str(f):'complete' if complete(root/f'fold{f}/status.json')
+        else 'interrupted' if (root/f'fold{f}').exists() else 'not_started' for f in frozen['planned_folds']}}
+
+
+def run(root,workers):
+    root=Path(root).resolve();check(root,protection=True)
+    children,guard,printing,stop={},threading.Lock(),threading.Lock(),threading.Event()
+    executor=None
+    def command(label,args):
+        with (root/f'{label}.log').open('w',encoding='utf-8') as log:
+            with guard:
+                if stop.is_set():return 130
+                child=subprocess.Popen([sys.executable,'-u','-m','portmatch.focused_replay_experiment',*args,'--output',str(root)],
+                    cwd=WORKSPACE,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True,encoding='utf-8',errors='replace',
+                    creationflags=subprocess.CREATE_NO_WINDOW if os.name=='nt' else 0)
+                monitor=ProcessMemoryMonitor(child.pid);monitor.sample();children[child]=monitor
+            try:
+                for line in child.stdout:
+                    with guard:monitor.sample()
+                    log.write(line);log.flush()
+                    with printing:print(f'[{label}] {line.rstrip()}',flush=True)
+                return child.wait()
+            except BaseException:
+                with guard:stop_child(child,monitor)
+                raise
+            finally:
+                child.stdout.close()
+                with guard:
+                    children.pop(child,None);monitor.close()
+    try:
+        state=status(root);print(json.dumps(state,indent=2),flush=True)
+        for fold,value in state['folds'].items():
+            if value=='complete':
+                out=root/f'fold{fold}';verify_fold_assets(out,read_json(out/'status.json'))
+        pending=[int(f) for f,s in state['folds'].items() if s!='complete']
+        archive_interrupted(root,[name for f in pending for name in (f'fold{f}',f'fold{f}.log')])
+        executor=ThreadPoolExecutor(max_workers=workers)
+        jobs={executor.submit(command,f'fold{f}',['run','--fold',str(f)]):f for f in pending};failed=[]
+        for job in as_completed(jobs):
+            if job.result():failed.append(jobs[job])
+            write_json(root/'orchestration.json',{'failed_folds':failed,'state':status(root)})
+        if failed:
+            print(f'Failed folds: {failed}; inspect preserved logs.',flush=True);return 1
+        return command('report',['report'])
+    except KeyboardInterrupt:
+        stop.set()
+        with guard:
+            for child,monitor in children.items():stop_child(child,monitor)
+        print('Stopped. Completed folds reusable; interrupted files preserved.',flush=True)
+        return 130
+    finally:
+        if executor is not None:executor.shutdown(wait=True,cancel_futures=True)
+
+
+def main():
+    parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--parent',type=Path,default=Path('runs/tonnage_repair_v1_20261031'))
+    parser.add_argument('--output',type=Path,default=Path('runs/focused_replay_v1_20261031'))
+    parser.add_argument('--workers',type=int,choices=(1,2),default=2)
+    parser.add_argument('--status',action='store_true')
+    parser.add_argument('--prepare-only',action='store_true',help='Freeze/verify hashes without training or evaluation')
+    args=parser.parse_args();root=args.output.resolve()
+    if args.status:
+        print(json.dumps(status(root),indent=2));return 0
+    if not root.exists():freeze(root,args.parent)
+    elif Path(check(root)['parent'])!=args.parent.resolve():raise ValueError('Parent differs from frozen study')
+    if args.prepare_only:
+        check(root,protection=True)
+        print(json.dumps(status(root),indent=2));return 0
+    with runner_lock(root):return run(root,args.workers)
+
+
+if __name__=='__main__':sys.exit(main())

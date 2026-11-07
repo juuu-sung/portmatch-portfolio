@@ -1,0 +1,180 @@
+{
+  "complete": true,
+  "mode": "full",
+  "profile": "tonnage_repair_v1_focused_search_fold0",
+  "zip_sha256": "3a1afeb2751950fb487b4f412ef34c8be11545ae59c06c1ccda74077ed84d2c5",
+  "zip_bytes": 56911153,
+  "root_entries": [
+    "model",
+    "requirements.txt",
+    "script.py"
+  ],
+  "total_subprocess_predictions": 5293,
+  "existing_artifacts_unchanged": true,
+  "python": "3.11.9",
+  "packages": {
+    "numpy": "1.26.4",
+    "pandas": "2.0.3",
+    "scipy": "1.15.3",
+    "scikit-learn": "1.5.2",
+    "rapidfuzz": "3.14.3",
+    "Unidecode": "1.4.0",
+    "joblib": "1.5.2",
+    "lightgbm": "4.6.0"
+  },
+  "limitations": "Local Windows/Python 3.11 verification; official Ubuntu/Python 3.11.17 timing and hidden test size remain unmeasured.",
+  "cases": [
+    {
+      "case": "all_recipe_probes",
+      "rows": 320,
+      "predictions_equal": true,
+      "input_bytes_equal": true,
+      "package_bytes_equal": true,
+      "seconds": 64.46356219996233,
+      "process_tree_peak_mib": 559.48046875
+    },
+    {
+      "case": "original_full",
+      "rows": 2452,
+      "predictions_equal": true,
+      "input_bytes_equal": true,
+      "package_bytes_equal": true,
+      "seconds": 295.29875790001824,
+      "process_tree_peak_mib": 566.9375
+    },
+    {
+      "case": "original_reversed",
+      "rows": 2452,
+      "predictions_equal": true,
+      "input_bytes_equal": true,
+      "package_bytes_equal": true,
+      "seconds": 281.1553530000383,
+      "process_tree_peak_mib": 564.72265625
+    },
+    {
+      "case": "original_subset",
+      "rows": 64,
+      "predictions_equal": true,
+      "input_bytes_equal": true,
+      "package_bytes_equal": true,
+      "seconds": 13.145868999999948,
+      "process_tree_peak_mib": 555.91796875
+    },
+    {
+      "case": "single",
+      "rows": 1,
+      "predictions_equal": true,
+      "input_bytes_equal": true,
+      "package_bytes_equal": true,
+      "seconds": 5.712419899995439,
+      "process_tree_peak_mib": 553.09765625
+    },
+    {
+      "case": "id_year_catalog_order",
+      "rows": 4,
+      "predictions_equal": true,
+      "input_bytes_equal": true,
+      "package_bytes_equal": true,
+      "seconds": 6.366948699927889,
+      "process_tree_peak_mib": 553.4296875
+    }
+  ],
+  "zip_original_fold0": {
+    "rows": 2452,
+    "correct": 2444,
+    "errors": 8,
+    "hangul_rows": 180,
+    "hangul_correct": 175,
+    "non_hangul_rows": 2272,
+    "non_hangul_correct": 2269,
+    "hangul_accuracy": 0.9722222222222222,
+    "non_hangul_accuracy": 0.9986795774647887,
+    "weighted_top1": 0.9801594287949921
+  },
+  "runtime_source_bytes_match_submission": true,
+  "runtime_sources": [
+    {
+      "path": "portmatch/__init__.py",
+      "sha256": "c9d0da86a412d8cb5dfbd29f532d807546ceaf24a39a3b05cf04226598b2331f"
+    },
+    {
+      "path": "portmatch/data.py",
+      "sha256": "9454e036012f0af2fde5560caf3a61b688d1aa7a632f10633413d500306b2b5d"
+    },
+    {
+      "path": "portmatch/feature_selection.py",
+      "sha256": "df45f2c9b291cefbd5b57c1f737d7cb51ba5f2591b2c58a1562e3512c24d9e88"
+    },
+    {
+      "path": "portmatch/features.py",
+      "sha256": "4d1b60d0e79b07d567c03d704e8d5ba005274d3970c01ebd0f0ed7f9aee15c0a"
+    },
+    {
+      "path": "portmatch/focused_runtime.py",
+      "sha256": "f79e0bec0cd2958bfbc56c97f389834b4de6abe7fe23a02a638650c6226dc0e2"
+    },
+    {
+      "path": "portmatch/hangul_expansion.py",
+      "sha256": "b391dd023d10c419041afbd919458b062fad441c236413ff0b6a3214fb886d06"
+    },
+    {
+      "path": "portmatch/memory.py",
+      "sha256": "c67e2e71ec5a4a5666d37ac8474b13867e2a88502c9c4bddb2dab07c560eb877"
+    },
+    {
+      "path": "portmatch/name_feature_cache.py",
+      "sha256": "3e09698f8b206b5856ae8034170dddfbc09e4cdcabc82cd7c08878ceae0e4295"
+    },
+    {
+      "path": "portmatch/name_features.py",
+      "sha256": "9ff0a31b96c84a0b3c192ca6247e649b164ac03364d23f11d396e2ec3a1ba73d"
+    },
+    {
+      "path": "portmatch/pipeline.py",
+      "sha256": "ff1d00a4bd7824e34f70531d1dbca2c545c1cf72c06f0ea94b35a3708bbd9cd2"
+    },
+    {
+      "path": "portmatch/ranking.py",
+      "sha256": "01fdc06d9f5b28d11b8978c879dd71dc634231fa92a58e45328c8783f9de3009"
+    },
+    {
+      "path": "portmatch/retrieval.py",
+      "sha256": "abd306271db0408899f53d4be4dfe2a1878e47d0e4b8669d9731c17c495108dd"
+    },
+    {
+      "path": "portmatch/robust_retrieval.py",
+      "sha256": "1b162bd7d810e771166c096c226bd575cecd871b61dbd3184e3a931d917fb484"
+    },
+    {
+      "path": "portmatch/text.py",
+      "sha256": "951404aa18c36ffac0d7f2320c4a779934f1fb47553317fac1de6949323195ef"
+    },
+    {
+      "path": "submission_focused/script.py",
+      "sha256": "49d3f161986cc80ae9c5f7952b7ab7faa1a3d0fca28d35eac07a3891186ed4e5"
+    }
+  ],
+  "public": {
+    "score": "0.8515414798",
+    "previous_best_score": "0.8424607623",
+    "recorded_date": "2026-10-31",
+    "source": "user_report",
+    "leaderboard": "Public",
+    "submission_id": null,
+    "server_screen_or_logs_reviewed": false
+  },
+  "sources": [
+    {
+      "path": "runs/verify_focused_search_fold0_full/review_20261031.json",
+      "sha256": "0bcb92e88e5dff1f36da3318a5e1ee9984f5c4aeb8eade66bdb4d6c055123a22"
+    },
+    {
+      "path": "runs/verify_focused_search_fold0_full/verification.json",
+      "sha256": "b7678848d25819eb7001c8497d730ea7df93c5057a2a8148eccd9bd784c6a2fd"
+    },
+    {
+      "path": "runs/tonnage_repair_v1_20261031/public_submission_result_20261031.json",
+      "sha256": "8af86f87d5c7f7441992ffcbe7a8d949e28d91bb7af06ff72c7c9c3d128c3a7a"
+    }
+  ]
+}
